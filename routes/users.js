@@ -47,9 +47,26 @@ if(!name|| !email || !password || !password2)
             const newUser = new UserModel({
                 name,email,password,
             })
-            newUser.save()
+
+            bcrypt.genSalt(10,(err,salt)=>
+            bcrypt.hash(newUser.password,salt,(err,hash)=>{
+                    if(err){
+                        throw err
+                    }
+                    newUser.password = hash
+                    newUser.save().then(user=>{
+                        message = ["successfully registered please log in"]
+
+                       req.flash('success_msg','successfuly registered')
+                        res.render('login',message)
+                        
+                    })
+                    .catch(err => console.log(err))
+                    
+            }))
+           
             console.log(newUser)
-            res.send('hello')
+            
          }
      })
  }
