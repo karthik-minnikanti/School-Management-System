@@ -77,8 +77,8 @@
   const passwordInput = document.getElementById('password')
   const reasonsContainer = document.getElementById('reasonsContainer')
   const btn = document.getElementById('button')
-  btn.disabled = true
-  passwordInput.addEventListener('keypress', updateStrengthMeter)
+  btn.disabled = false
+  passwordInput.addEventListener('keypress')
 
   function updateStrengthMeter() {
     const weaknesses = calculatePasswordStrength(passwordInput.value)
