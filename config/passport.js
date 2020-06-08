@@ -10,7 +10,7 @@ new localStrategy({usernameField:'email'},(email,password,done)=>{
     //match user
     User.findOne({email:email})
     .then(user =>{
-      console.log('HERE')
+      
         if(!user) return done(null,false,{message:"email is not registered"})
         
         bcrypt.compare(password,user.password,(err,isMatch)=>{
@@ -19,7 +19,7 @@ new localStrategy({usernameField:'email'},(email,password,done)=>{
             return done(null,user)
             else
             return done(null,false,{message:"password is incorrect"})
-
+           
         })
     })
 
