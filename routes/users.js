@@ -3,7 +3,10 @@ const express = require('express')
 const router = express.Router()
 const UserModel = require('../models/Users')
 require('mongoose')
+const passport = require('passport')
 const bcrypt = require('bcryptjs')
+require('../config/passport')(passport)
+const app = express()
 //loginpage
 router.get('/login',(req,res)=>{
     res.render('login')
@@ -56,9 +59,14 @@ if(!name|| !email || !password || !password2)
                     newUser.password = hash
                     newUser.save().then(user=>{
                         message = ["successfully registered please log in"]
-
-                       req.flash('success_msg','successfuly registered')
-                        res.render('login',message)
+                        // app.locals.success_msg="Success"
+                        // req.flash()
+                         res.locals.success_msg=req.flash("success_msg","successfuly registered please log in")
+                        // res.redirect('/users/login')
+                       // res.sendStatus(req.flash("message","successfuly registered"))
+                        res.redirect('/users/login')
+                        console.log(req.flash('success_msg'))
+                        message=''
                         
                     })
                     .catch(err => console.log(err))
@@ -74,5 +82,16 @@ if(!name|| !email || !password || !password2)
 console.log(errors)
 
     
+})
+
+
+//login handle 
+router.post('/login',(req,res,next)=>{
+    passport.authenticate('local',{
+        successRedirect:'/dashboard',
+        failureRedirect: '/users/login',
+        failureFlash:true,
+    })(req,res,next)
+
 })
 module.exports= router

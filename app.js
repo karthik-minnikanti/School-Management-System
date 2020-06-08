@@ -2,11 +2,15 @@ const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
-const flash = require('connect-flash')
+const flash = require('express-flash')
 const session = require('express-session')
 //DB conf
 const db = require('./config/keys').MongoURI
 //connection
+const passport = require('passport') 
+require('./config/passport')(passport)
+app.use(passport.initialize());
+app.use(passport.session());
 const path = require('path')
 const js = path.join(__dirname,'/public/password')
 app.use(express.static(js))
@@ -16,7 +20,7 @@ mongoose.connect(db,{useNewUrlParser:true, useUnifiedTopology: true }).then(()=>
 }).catch((err)=>{
     console.log(err)
 })
-
+app.use(flash())
 app.use(expressLayouts)
 app.set('view engine','ejs')
 app.use(express.urlencoded({extended:true}))
@@ -28,8 +32,10 @@ app.use(session({
     saveUninitialized:true
 }))
 
+
+
 //connect flash
-app.use(flash())
+
 //global variables
 
 //routes
@@ -37,19 +43,18 @@ console.log(__dirname)
 console.log(js)
 app.use('/',require('./routes/index'))
 app.use('/users',require('./routes/users'))
-app.use((req,res,next)=>{
-    //req.locals.success_msg = req.flash('success_msg')
-   // req.locals.error_msg = req.flash('error_msg')
-   // console.log(req.locals.success_msg)
-    next()
-
-})
 
 //ejs
 
+app.use((req,res,next)=>{
+    res.locals.success_msg = req.flash('success_msg')
+    res.locals.error_msg = req.flash('error_msg')
+    res.locals.error = req.flash('error')
+    console.log(req.locals.success_msg)
+    next()
 
+})
 const PORT = process.env.PORT || 3000
-
 
 app.listen(PORT,()=>{
     console.log('Server Started')
