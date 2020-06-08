@@ -7,7 +7,9 @@ const session = require('express-session')
 //DB conf
 const db = require('./config/keys').MongoURI
 //connection
-
+const path = require('path')
+const js = path.join(__dirname,'/public/password')
+app.use(express.static(js))
 mongoose.connect(db,{useNewUrlParser:true, useUnifiedTopology: true }).then(()=>
 {
     console.log("connected ")
@@ -31,13 +33,14 @@ app.use(flash())
 //global variables
 
 //routes
-
+console.log(__dirname)
+console.log(js)
 app.use('/',require('./routes/index'))
 app.use('/users',require('./routes/users'))
 app.use((req,res,next)=>{
-    req.locals.success_msg = req.flash('success_msg')
-    req.locals.error_msg = req.flash('error_msg')
-    console.log(req.locals.success_msg)
+    //req.locals.success_msg = req.flash('success_msg')
+   // req.locals.error_msg = req.flash('error_msg')
+   // console.log(req.locals.success_msg)
     next()
 
 })

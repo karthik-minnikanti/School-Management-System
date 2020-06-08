@@ -1,73 +1,155 @@
-<link
-      rel="stylesheet"
-      href="https://bootswatch.com/4/lux/bootstrap.min.css"
-    />
-  <body>
-    
-  
-<div class="row mt-5">
+<link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css" />
+
+<body>
+
+
+  <div class="row mt-5">
     <div class="col-md-6 m-auto">
       <div class="card card-body">
         <h1 class="text-center mb-3">
           <i class="fas fa-user-secret"></i> Register
         </h1>
         <% if(typeof errors !== 'undefined'){ %> <% errors.forEach(function(error) { %>
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <%= error.msg %>
-          </div>
-          <% }); %> <% } %> 
-          
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= error.msg %>
+        </div>
+        <% }); %> <% } %>
+
         <form action="/users/register" method="POST">
           <div class="form-group">
             <label for="name">Name</label>
-            <input
-              type="name"
-              id="name"
-              name="name"
-              class="form-control"
-              placeholder="Enter Name"
-              value="<%= typeof name != 'undefined' ? name : '' %>"
-            />
+            <input type="name" id="name" name="name" class="form-control" placeholder="Enter Name"
+              value="<%= typeof name != 'undefined' ? name : '' %>" />
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="form-control"
-              placeholder="Enter Email"
-              value="<%= typeof email != 'undefined' ? email : '' %>"
-            />
+            <input type="email" id="email" name="email" class="form-control" placeholder="Enter Email"
+              value="<%= typeof email != 'undefined' ? email : '' %>" />
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="form-control"
-              placeholder="Create Password"
-              value="<%= typeof password != 'undefined' ? password : '' %>"
-            />
+            <input type="password" id="password" name="password" class="form-control" placeholder="Create Password"
+              value="<%= typeof password != 'undefined' ? password : '' %>" />
+              <style>
+                .hide {
+                  display: none;
+                }
+                .myDIV{
+                  text-align: center;
+                }
+                .myDIV:hover+.hide {
+                  display: block;
+                  color: red;
+                  align-items: center;
+                  text-align: center;
+                }
+              </style>
+              </head>
+  
+              <body>
+  
+  
+                <div class="myDIV">Instructions for password</div>
+                <div class="hide">Your password must have atleast two uppercase two lowercase two numbers and two
+                  specialcharacters</div>
+              <div id="reasonsContainer">
+              
+              </div>
           </div>
-          <div class="form-group">
-            <label for="password2">Confirm Password</label>
-            <input
-              type="password"
-              id="password2"
-              name="password2"
-              class="form-control"
-              placeholder="Confirm Password"
-              value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">
-            Register
-          </button>
+
+              <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2" name="password2" class="form-control"
+                  placeholder="Confirm Password" value="<%= typeof password2 != 'undefined' ? password2 : '' %>" />
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" id='button'>
+                Register
+              </button>
         </form>
-        <p class="lead mt-4">Have An Account? <a  href="/users/login">Login</a></p>
+        <p class="lead mt-4">Have An Account? <a href="/users/login">Login</a></p>
       </div>
     </div>
   </div>
-</body> 
+</body>
+<script>
+  const strength = true
+  const strengthMeter = document.getElementById('strength-meter')
+  const passwordInput = document.getElementById('password')
+  const reasonsContainer = document.getElementById('reasonsContainer')
+  const btn = document.getElementById('button')
+  btn.disabled = true
+  passwordInput.addEventListener('keypress', updateStrengthMeter)
+
+  function updateStrengthMeter() {
+    const weaknesses = calculatePasswordStrength(passwordInput.value)
+
+    let strength = 100
+    reasonsContainer.innerHTML = ''
+    //  weaknesses.forEach(weakness => {
+    if (weaknesses[0] == undefined && weaknesses[1] == undefined && weaknesses[2] == undefined && weaknesses[3] == undefined && weaknesses[4] == undefined && weaknesses[5] == undefined) {
+      btn.disabled = false
+      const messageElement = document.createElement('div')
+      messageElement.innerText = ""
+      return reasonsContainer.appendChild(messageElement)
+    }
+    btn.disabled = true
+    const messageElement = document.createElement('div')
+    messageElement.innerText = "your password is weak"
+    reasonsContainer.appendChild(messageElement)
+    //  })
+    strengthMeter.style.setProperty('--strength', strength)
+  }
+
+  function calculatePasswordStrength(password) {
+    const weaknesses = []
+    weaknesses.push(lengthWeakness(password))
+    weaknesses.push(lowercaseWeakness(password))
+    weaknesses.push(uppercaseWeakness(password))
+    weaknesses.push(numberWeakness(password))
+    weaknesses.push(specialCharactersWeakness(password))
+
+    return weaknesses
+  }
+
+  function lengthWeakness(password) {
+    const length = password.length
+
+    if (length <= 6) {
+      return {
+        message: false
+      }
+    }
+
+  }
+
+  function uppercaseWeakness(password) {
+    return characterTypeWeakness(password, /[A-Z]/g, 'uppercase characters')
+
+  }
+
+  function lowercaseWeakness(password) {
+    return characterTypeWeakness(password, /[a-z]/g, 'lowercase characters')
+  }
+
+  function numberWeakness(password) {
+    return characterTypeWeakness(password, /[0-9]/g, 'numbers')
+  }
+
+  function specialCharactersWeakness(password) {
+    return characterTypeWeakness(password, /[^0-9a-zA-Z\s]/g, 'special characters')
+  }
+
+  function characterTypeWeakness(password, regex, type) {
+    const matches = password.match(regex) || []
+
+    if (matches.length === 0) {
+      return {
+        message: false
+      }
+    }
+
+
+  }
+
+
+</script>

@@ -26,9 +26,9 @@ if(!name|| !email || !password || !password2)
      errors.push({msg:"passwords do not match"})
  }
 
- if(password.length<6)
+ if(password.length<8)
  {
-     errors.push({msg:"password should be at least 6 characters"})
+     errors.push({msg:"password should be at least 8 characters"})
  }
  if(errors.length>0)
  {
