@@ -14,7 +14,7 @@ router.get('/login',(req,res)=>{
 })
 router.get('/dashboard',ensureAuthenticate,(req,res)=>{
     res.render('dashboard',{
-        name: req.user.name
+        name: req.user.rollnumber
     })
     console.log(req.user)
 })
@@ -24,10 +24,10 @@ router.get('/register',(req,res)=>{
 })
 //register handle
 router.post('/register',(req,res)=>{
-    const {name,email,password,password2} = req.body
+    const {name,email,rollnumber,password,password2} = req.body
     let errors = []
 //check requirng
-if(!name|| !email || !password || !password2)
+if(!name|| !email || !rollnumber|| !password || !password2)
 {
     errors.push({msg:"please fill all fields"})
 }
@@ -42,7 +42,7 @@ if(!name|| !email || !password || !password2)
  }
  if(errors.length>0)
  {
-     res.render('register',{errors,name,email,password,password2})
+     res.render('register',{errors,name,email,rollnumber,password,password2})
  }
  else{
      UserModel.findOne({email}).then((user)=>{
@@ -55,7 +55,7 @@ if(!name|| !email || !password || !password2)
          }
         else {
             const newUser = new UserModel({
-                name,email,password,
+                name,email,rollnumber,password,
             })
 
             bcrypt.genSalt(10,(err,salt)=>
