@@ -1,4 +1,4 @@
-
+const attendance = require('../models/attendance')
 const express = require('express')
 const router = express.Router()
 const UserModel = require('../models/Users')
@@ -21,6 +21,30 @@ router.get('/dashboard',ensureAuthenticate,(req,res)=>{
 //registerpage
 router.get('/register',(req,res)=>{
     res.render('register')
+})
+router.get('/attendance',(req,res)=>{
+    const newAttendance = new attendance({
+        rollNumber:"16E1A0494",
+        Noofclasses:45,
+        Attended:20
+    })
+    res.render('attendance',{
+        rollnumber:req.user.rollnumber
+    })
+    newAttendance.save()
+})
+router.get('/attendance/semester',(req,res)=>{
+    attendance.findOne({rollnumber:req.user.attendance}).then(attendance1=>{
+        const attended ="No of classes attended "+ attendance1.Attended
+        const total ="Total No of classes "+ attendance1.Noofclasses
+        res.render('Semesterattendace',{
+            rollnumber:req.user.rollnumber,
+            attended,
+            total
+        })
+        console.log(attendance1)
+    })
+   
 })
 //register handle
 router.post('/register',(req,res)=>{
