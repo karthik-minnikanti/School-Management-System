@@ -24,7 +24,7 @@ router.get('/register',(req,res)=>{
 })
 router.get('/attendance',(req,res)=>{
     const newAttendance = new attendance({
-        rollNumber:"16E1A0494",
+        rollNumber:"16NE1A0494",
         Noofclasses:45,
         Attended:20
     })
@@ -34,7 +34,9 @@ router.get('/attendance',(req,res)=>{
     newAttendance.save()
 })
 router.get('/attendance/semester',(req,res)=>{
-    attendance.findOne({rollnumber:req.user.attendance}).then(attendance1=>{
+    console.log(req.user.rollnumber)
+    //const rollNumber = req.user.rollnumber
+    attendance.findOne({rollNumber:req.user.rollnumber}).then(attendance1=>{
         const attended ="No of classes attended "+ attendance1.Attended
         const total ="Total No of classes "+ attendance1.Noofclasses
         res.render('Semesterattendace',{
@@ -74,7 +76,7 @@ if(!name|| !email || !rollnumber|| !password || !password2)
              console.log('this is working')
                 // user exists
                 errors.push({msg:"Email is already registered"})
-                res.render('register',{errors,name,email,password,password2})
+                res.render('register',{errors,name,email,rollnumber,password,password2})
                 
          }
         else {
