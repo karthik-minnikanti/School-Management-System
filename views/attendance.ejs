@@ -1,8 +1,136 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <p class="lead mb-3">Welcome <%= rollnumber %></p>
-<a href="/users/attendance/semester" class="btn btn-secondary">Semester Wise Attendance</a>
-<a href="/users/attendance/monthly" class="btn btn-secondary">Monthly Attendance</a>
-<a href="/users/attendance/class" class="btn btn-secondary">Class Wise Attendance</a>
+<div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <div class="card border-dark mb-3" style="max-width: 18rem;">
+            <div class="card-header">Semester Wise Attendance</div>
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <div id="piechart" style = "width: 320px; height: 145px; padding-right: 100px;"></div>
+              <p id="attended"><%= attended %></p> <br>
+             <p id="absent"><%= Absent %></p> <br>
+
+              <p class="card-text"></p>
+            </div>
+          </div>
+      </div>
+      <div class="col-sm">
+        <div class="card border-dark mb-3" style="max-width: 18rem;">
+            <div class="card-header">Nonthly Attendance</div>
+            <div class="card-body text-dark">
+             
+              <div id="piechart1"></div>
+             
+            </div>
+          </div>
+      </div>
+      <div class="col-sm">
+        <div class="card border-dark mb-3" style="max-width: 18rem;">
+            <div class="card-header">Class Wise Attendance</div>
+            <div class="card-body">
+              <div id="pieclasswise"></div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  
+  
+  <style>
+    #attended {
+      display: none
+    }
+    #absent {
+      display: none
+    }
+   
+  </style>
+
 
 <p></p>
 <p></p>
 <p></p>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  //define the chart package
+  //drawChart()
+  var timeout;
+    google.charts.load('current', { 'packages': ['corechart'] });
+    $(document).ready(function(){
+       timeout = setInterval(function () {
+          if (google.visualization != undefined) {
+             drawChart();
+             monthly();
+             classWise();
+             clearInterval(timeout);
+          }
+       }, 300);
+    });
+  google.load("visualization", "1", {packages:["corechart"]});
+  
+  google.charts.load('current', {'packages':['corechart']});
+  //set what is supposed to happen when the page loads. You typically want a state of the chart to show on load, but in this case, there is no data on load.
+  //google.charts.setOnLoadCallback(drawChart);
+ // drawChart()
+ //submit requires text inputs to use parseInt to work as numbers
+  function drawChart() {
+    google.load("visualization", "1", {packages:["corechart"]});
+     
+  google.charts.load('current', {packages:['corechart']});
+   Attended = parseInt(document.getElementById('attended').innerHTML);
+   absent= parseInt(document.getElementById('absent').innerHTML);
+   console.log(Attended)
+   console.log(absent)
+   
+   //replace data with variable names
+   var chart1 = new google.visualization.PieChart(document.getElementById('piechart'));
+   var data = google.visualization.arrayToDataTable([
+      ['Task', 'Hours per Week'],
+      ['Attended',    Attended ],
+      ['Absent',      absent],
+     
+    ]);
+    var options = {
+      
+    };
+    
+//the id is the DOM location to draw the chart    
+var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+chart1.draw(data, options);
+//statisticsOverview.init()
+//google.setOnLoadCallback(drawChart);
+  }
+ // google.setOnLoadCallback(drawChart);
+ function monthly()
+ {
+  var chart = new google.visualization.ColumnChart(document.getElementById('piechart1'));
+     var data = google.visualization.arrayToDataTable([
+         ['Element', 'Density', { role: 'style' }],
+         ['January', 8.94, '#b87333'],            // RGB value
+         ['Feb', 10.49, 'silver'],            // English color name
+         ['March', 19.30, 'gold'],
+
+       ['April', 21.45, 'color: #e5e4e2' ], // CSS-style declaration
+      ]);
+      chart.draw(data)
+ }
+ function classWise() {
+            // Define the chart to be drawn.
+            var data = google.visualization.arrayToDataTable([
+               ['Year', 'Asia'],
+               ['English',  900],
+               ['Hindi',  1000],
+               ['Telugu',  1170],
+               ['marati',  1250],
+               ['Kannada',  1530]
+            ]);
+
+            var options = {title: 'Classwise Attendence'}; 
+
+            // Instantiate and draw the chart.
+            var chart = new google.visualization.BarChart(document.getElementById('pieclasswise'));
+            chart.draw(data, options);
+         }
+</script> 

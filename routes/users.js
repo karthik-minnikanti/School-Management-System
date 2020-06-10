@@ -29,7 +29,9 @@ router.get('/attendance',(req,res)=>{
         Attended:20
     })
     res.render('attendance',{
-        rollnumber:req.user.rollnumber
+        rollnumber:req.user.rollnumber,
+        attended: 25,
+        Absent:30
     })
     newAttendance.save()
 })
